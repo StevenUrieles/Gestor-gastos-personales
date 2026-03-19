@@ -1,0 +1,58 @@
+<header class="header">
+
+  <!-- Brand -->
+  <div class="header__brand">
+    <div class="header__logo">
+      <span class="logo-mark">◈</span>
+      <div class="logo-ring"></div>
+    </div>
+    <div class="header__name-wrap">
+      <span class="header__name">GESTOR<span class="header__name--red">PRO</span></span>
+      <span class="header__tagline">Finance Manager</span>
+    </div>
+  </div>
+
+  <!-- Desktop Nav -->
+  <nav class="header__nav" #navRef>
+    <button
+      class="nav-item"
+      *ngFor="let item of navItems"
+      [class.nav-item--active]="activeView === item.id"
+      (click)="navigate(item.id)"
+      (mouseenter)="$event.target"
+    >
+      <span class="nav-item__label">{{ item.label }}</span>
+      <span class="nav-item__glow"></span>
+    </button>
+
+    <!-- Sliding indicator -->
+    <div class="nav-indicator" [style.left]="indicatorStyle.left" [style.width]="indicatorStyle.width"></div>
+  </nav>
+
+  <!-- Right -->
+  <div class="header__right">
+    <div class="header__status">
+      <span class="status-pulse"></span>
+      <span class="status-text">API Live</span>
+    </div>
+    <div class="header__date">
+      <span class="date-day">{{ today | date:'dd' }}</span>
+      <span class="date-mon">{{ today | date:'MMM yyyy' | uppercase }}</span>
+    </div>
+    <!-- Mobile hamburger -->
+    <button class="hamburger" (click)="toggleMenu()" [class.hamburger--open]="menuOpen">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+
+  <!-- Mobile menu -->
+  <div class="mobile-menu" [class.mobile-menu--open]="menuOpen">
+    <button
+      class="mobile-nav-item"
+      *ngFor="let item of navItems"
+      [class.mobile-nav-item--active]="activeView === item.id"
+      (click)="navigate(item.id)"
+    >{{ item.label }}</button>
+  </div>
+
+</header>

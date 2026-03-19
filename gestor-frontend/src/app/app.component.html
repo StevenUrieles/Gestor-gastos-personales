@@ -1,0 +1,23 @@
+<div class="app-shell">
+  <app-header [activeView]="activeView" (navChange)="onNavChange($event)"></app-header>
+  <main class="app-shell__main">
+    <div class="view-container" [attr.data-view]="activeView">
+
+      <!-- DASHBOARD -->
+      <div class="view" [class.view--active]="activeView === 'dashboard'">
+        <app-dashboard *ngIf="activeView === 'dashboard'"></app-dashboard>
+      </div>
+
+      <!-- GASTOS -->
+      <div class="view" [class.view--active]="activeView === 'gastos'">
+        <app-gastos-view *ngIf="activeView === 'gastos'"></app-gastos-view>
+      </div>
+
+      <!-- REPORTES -->
+      <div class="view" [class.view--active]="activeView === 'reportes'">
+        <app-reportes-view *ngIf="activeView === 'reportes'"></app-reportes-view>
+      </div>
+
+    </div>
+  </main>
+</div>

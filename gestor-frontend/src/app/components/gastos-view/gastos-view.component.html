@@ -1,0 +1,59 @@
+<div class="gastos">
+
+  <div class="toast" [class.toast--visible]="toast" [class.toast--error]="toast!.type==='error'" *ngIf="toast">
+    <span class="toast__dot"></span>{{ toast.message }}
+  </div>
+
+  <div class="gastos__header">
+    <div>
+      <div class="eyebrow"><span class="edot"></span> GESTIÓN DE GASTOS</div>
+      <h2 class="gastos__title">Todos tus <span class="red">Registros</span></h2>
+    </div>
+    <button class="add-btn" (click)="openNew()">
+      <span class="add-btn__plus">+</span> Nuevo Gasto
+    </button>
+  </div>
+
+  <div class="sk-grid" *ngIf="loading">
+    <div class="sk-card" *ngFor="let i of [1,2,3,4,5,6]"></div>
+  </div>
+
+  <div class="empty" *ngIf="!loading && expenses.length === 0">
+    <span class="empty__icon">◈</span>
+    <p class="empty__title">Sin Registros</p>
+    <p class="empty__sub">Crea tu primer gasto con el botón de arriba</p>
+    <button class="add-btn" (click)="openNew()" style="margin-top:1.5rem">+ Primer Gasto</button>
+  </div>
+
+  <div class="cards-grid" *ngIf="!loading && expenses.length > 0">
+    <div class="gasto-card" *ngFor="let e of expenses; trackBy: trackById" [style.--cat-color]="getCategoryColor(e.category)">
+      <div class="gasto-card__top">
+        <div class="gasto-card__icon">{{ getCategoryIcon(e.category) }}</div>
+        <div class="gasto-card__actions">
+          <button class="card-btn card-btn--edit" (click)="openEdit(e)">✎</button>
+          <button class="card-btn card-btn--del" (click)="onDelete(e.id!)">✕</button>
+        </div>
+      </div>
+      <div class="gasto-card__body">
+        <span class="gasto-card__desc">{{ e.description }}</span>
+        <span class="gasto-card__amount">{{ e.amount | currency:'COP':'':'1.0-0':'es-CO' }}</span>
+        <span class="gasto-card__currency">COP</span>
+      </div>
+      <div class="gasto-card__footer">
+        <span class="cat-tag" [style.color]="getCategoryColor(e.category)">{{ getCategoryLabel(e.category) }}</span>
+        <span class="gasto-card__date">{{ e.date | date:'dd MMM yy':'' : 'es' }}</span>
+      </div>
+      <div class="gasto-card__pay">{{ getPaymentLabel(e.paymentMethod) }}</div>
+      <div class="gasto-card__bar"></div>
+    </div>
+  </div>
+
+  <div class="gastos__count" *ngIf="expenses.length > 0">
+    <span>{{ expenses.length }} registros</span>
+    <span class="gastos__total">Total: <strong>{{ getTotalFn() | currency:'COP':'':'1.0-0':'es-CO' }} COP</strong></span>
+  </div>
+
+  <app-expense-form [visible]="formVisible" [expense]="editingExpense"
+    (save)="onSave($event)" (cancel)="closeForm()">
+  </app-expense-form>
+</div>

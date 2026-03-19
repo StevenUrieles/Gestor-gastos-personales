@@ -1,0 +1,88 @@
+<div class="list-section">
+
+  <!-- Toolbar -->
+  <div class="toolbar">
+    <div class="filter-chips">
+      <button
+        class="fchip"
+        *ngFor="let cat of allCategories"
+        [class.fchip--active]="filterCategory === cat"
+        (click)="filterCategory = cat"
+      >{{ cat === 'ALL' ? 'Todos' : getCategoryIcon(cat) + ' ' + getCategoryLabel(cat) }}</button>
+    </div>
+    <div class="toolbar__right">
+      <input class="date-input" type="date" [(ngModel)]="filterDate" [max]="today" />
+      <button class="sort-btn" (click)="toggleSort('date')" [class.sort-btn--on]="sortField==='date'">
+        Fecha {{ sortField==='date' ? (sortDesc?'↓':'↑') : '' }}
+      </button>
+      <button class="sort-btn" (click)="toggleSort('amount')" [class.sort-btn--on]="sortField==='amount'">
+        Monto {{ sortField==='amount' ? (sortDesc?'↓':'↑') : '' }}
+      </button>
+      <button class="clear-btn" *ngIf="filterCategory!=='ALL'||filterDate" (click)="clearFilters()">✕</button>
+    </div>
+  </div>
+
+  <!-- Skeleton -->
+  <div class="skeleton-wrap" *ngIf="loading">
+    <div class="skeleton-row" *ngFor="let i of [1,2,3,4,5]"></div>
+  </div>
+
+  <!-- Empty -->
+  <div class="empty" *ngIf="!loading && filtered.length===0">
+    <span class="empty__icon">◈</span>
+    <p class="empty__title">Sin registros</p>
+    <p class="empty__sub">{{ expenses.length===0 ? 'Agrega tu primer gasto con el botón de arriba' : 'Ningún gasto coincide con los filtros' }}</p>
+  </div>
+
+  <!-- Table -->
+  <div class="expense-table" *ngIf="!loading && filtered.length>0">
+    <div class="table-header">
+      <span>Descripción</span>
+      <span>Categoría</span>
+      <span>Fecha</span>
+      <span>Pago</span>
+      <span class="text-right">Monto</span>
+      <span></span>
+    </div>
+
+    <div
+      class="expense-row"
+      *ngFor="let e of filtered; trackBy: trackById"
+      [class.expense-row--confirming]="confirmDeleteId===e.id"
+    >
+      <!-- Delete confirm -->
+      <div class="del-confirm" *ngIf="confirmDeleteId===e.id">
+        <span>¿Eliminar este registro?</span>
+        <button class="del-yes" (click)="doDelete(e.id!)">Eliminar</button>
+        <button class="del-no" (click)="cancelDelete()">Cancelar</button>
+      </div>
+
+      <div class="row-desc">
+        <div class="row-dot" [style.background]="getCategoryColor(e.category)"></div>
+        <span>{{ e.description }}</span>
+      </div>
+
+      <span>
+        <span class="cat-badge" [style.color]="getCategoryColor(e.category)" [style.border-color]="getCategoryColor(e.category)+'28'">
+          {{ getCategoryIcon(e.category) }} {{ getCategoryLabel(e.category) }}
+        </span>
+      </span>
+
+      <span class="row-date">{{ e.date | date:'dd MMM yy':'' : 'es' }}</span>
+
+      <span class="row-pay">{{ getPaymentLabel(e.paymentMethod) }}</span>
+
+      <span class="row-amt">{{ e.amount | currency:'COP':'':'1.0-0':'es-CO' }}</span>
+
+      <div class="row-actions">
+        <button class="act-btn act-btn--edit" (click)="edit.emit(e)">✎</button>
+        <button class="act-btn act-btn--del" (click)="confirmDelete(e.id!)">⌫</button>
+      </div>
+    </div>
+
+    <div class="table-footer">
+      <span>{{ filtered.length }} / {{ expenses.length }} registros</span>
+      <span>Total: <strong>{{ getTotal() | currency:'COP':'':'1.0-0':'es-CO' }} COP</strong></span>
+    </div>
+  </div>
+</div>

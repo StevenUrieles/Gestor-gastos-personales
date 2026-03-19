@@ -1,0 +1,30 @@
+<div class="stats" *ngIf="expenses.length > 0">
+  <!-- KPI strip -->
+  <div class="kpi-strip">
+    <div class="kpi" *ngFor="let s of stats" [style.--glow]="s.color">
+      <div class="kpi__icon" [style.color]="s.color">{{ s.icon }}</div>
+      <div class="kpi__body">
+        <span class="kpi__label">{{ s.label }}</span>
+        <span class="kpi__value">{{ s.value }}</span>
+      </div>
+      <div class="kpi__line" [style.background]="s.color"></div>
+    </div>
+  </div>
+
+  <!-- Category breakdown -->
+  <div class="breakdown" *ngIf="categoryStats.length">
+    <span class="breakdown__title">DESGLOSE POR CATEGORÍA</span>
+    <div class="breakdown__grid">
+      <div class="cat-item" *ngFor="let c of categoryStats">
+        <div class="cat-item__header">
+          <span class="cat-item__name">{{ c.label }}</span>
+          <span class="cat-item__pct" [style.color]="c.color">{{ c.percent }}%</span>
+        </div>
+        <div class="cat-item__bar">
+          <div class="cat-item__fill" [style.width.%]="c.percent" [style.background]="c.color"></div>
+        </div>
+        <span class="cat-item__total">{{ c.total | currency:'COP':'':'1.0-0':'es-CO' }} COP</span>
+      </div>
+    </div>
+  </div>
+</div>

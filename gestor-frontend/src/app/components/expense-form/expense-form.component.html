@@ -1,0 +1,70 @@
+<div class="overlay" [class.overlay--show]="visible" (click)="onCancel()"></div>
+
+<aside class="panel" [class.panel--open]="visible">
+  <div class="panel__header">
+    <div>
+      <div class="panel__eyebrow">{{ isEdit ? 'MODIFICAR' : 'NUEVO REGISTRO' }}</div>
+      <h2 class="panel__title">{{ isEdit ? 'Editar Gasto' : 'Registrar Gasto' }}</h2>
+    </div>
+    <button class="panel__close" (click)="onCancel()">✕</button>
+  </div>
+
+  <form class="panel__form" [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>
+
+    <div class="field" [class.field--err]="hasError('description')">
+      <label class="field__lbl">Descripción</label>
+      <input class="field__inp" type="text" formControlName="description" placeholder="Ej: Almuerzo en restaurante" autocomplete="off" />
+      <span class="field__err" *ngIf="hasError('description')">
+        <ng-container *ngIf="form.get('description')?.errors?.['required']">Requerido.</ng-container>
+        <ng-container *ngIf="form.get('description')?.errors?.['minlength']">Mínimo 3 caracteres.</ng-container>
+      </span>
+    </div>
+
+    <div class="field" [class.field--err]="hasError('amount')">
+      <label class="field__lbl">Monto</label>
+      <div class="field__prefix-wrap">
+        <span class="field__prefix">$</span>
+        <input class="field__inp field__inp--pl" type="number" formControlName="amount" placeholder="0.00" min="0.01" step="0.01" />
+      </div>
+      <span class="field__err" *ngIf="hasError('amount')">Monto mínimo $0.01</span>
+    </div>
+
+    <div class="field" [class.field--err]="hasError('date')">
+      <label class="field__lbl">Fecha</label>
+      <input class="field__inp" type="date" formControlName="date" [max]="today" />
+      <span class="field__err" *ngIf="hasError('date')">Fecha requerida.</span>
+    </div>
+
+    <div class="field" [class.field--err]="hasError('category')">
+      <label class="field__lbl">Categoría</label>
+      <div class="chip-grid">
+        <button type="button" class="chip" *ngFor="let cat of categories"
+          [class.chip--on]="form.get('category')?.value === cat.value"
+          (click)="form.get('category')?.setValue(cat.value)">
+          <span>{{ cat.icon }}</span><span>{{ cat.label }}</span>
+        </button>
+      </div>
+      <span class="field__err" *ngIf="hasError('category')">Selecciona una categoría.</span>
+    </div>
+
+    <div class="field" [class.field--err]="hasError('paymentMethod')">
+      <label class="field__lbl">Método de Pago</label>
+      <div class="chip-grid chip-grid--pay">
+        <button type="button" class="chip" *ngFor="let pm of paymentMethods"
+          [class.chip--on]="form.get('paymentMethod')?.value === pm.value"
+          (click)="form.get('paymentMethod')?.setValue(pm.value)">
+          <span>{{ pm.icon }}</span><span>{{ pm.label }}</span>
+        </button>
+      </div>
+      <span class="field__err" *ngIf="hasError('paymentMethod')">Selecciona método de pago.</span>
+    </div>
+
+    <div class="panel__actions">
+      <button type="button" class="btn-ghost" (click)="onCancel()">Cancelar</button>
+      <button type="submit" class="btn-red" [disabled]="submitting">
+        <span *ngIf="!submitting">{{ isEdit ? 'Guardar Cambios' : 'Registrar' }}</span>
+        <span *ngIf="submitting" class="spinner"></span>
+      </button>
+    </div>
+  </form>
+</aside>

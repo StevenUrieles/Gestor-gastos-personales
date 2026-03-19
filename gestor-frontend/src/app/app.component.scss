@@ -1,0 +1,28 @@
+.app-shell {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg);
+  &__main { flex: 1; }
+}
+
+.view-container {
+  position: relative;
+  min-height: calc(100vh - 65px);
+}
+
+.view {
+  opacity: 0;
+  transform: translateY(10px);
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+  transition: opacity 0.35s ease, transform 0.35s ease;
+
+  &--active {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: all;
+    position: relative;
+  }
+}

@@ -1,0 +1,109 @@
+<div class="reportes">
+
+  <div class="reportes__header">
+    <div class="eyebrow"><span class="edot"></span> ANÁLISIS FINANCIERO</div>
+    <h2 class="reportes__title">Tus <span class="red">Reportes</span></h2>
+    <p class="reportes__sub">Visualiza el comportamiento de tus gastos</p>
+  </div>
+
+  <!-- Skeleton -->
+  <div class="sk-grid" *ngIf="loading">
+    <div class="sk-card" *ngFor="let i of [1,2,3,4]"></div>
+  </div>
+
+  <!-- Empty -->
+  <div class="r-empty" *ngIf="!loading && expenses.length === 0">
+    <span class="r-empty__icon">◎</span>
+    <p>Sin datos para mostrar. Registra gastos en la sección <strong>Dashboard</strong> o <strong>Gastos</strong>.</p>
+  </div>
+
+  <ng-container *ngIf="!loading && expenses.length > 0">
+
+    <!-- Summary KPIs -->
+    <div class="r-kpis">
+      <div class="r-kpi r-kpi--red">
+        <span class="r-kpi__label">TOTAL ACUMULADO</span>
+        <span class="r-kpi__value">{{ total | currency:'COP':'':'1.0-0':'es-CO' }}</span>
+        <span class="r-kpi__sub">{{ expenses.length }} transacciones</span>
+      </div>
+      <div class="r-kpi">
+        <span class="r-kpi__label">PROMEDIO POR GASTO</span>
+        <span class="r-kpi__value">{{ avg | currency:'COP':'':'1.0-0':'es-CO' }}</span>
+        <span class="r-kpi__sub">Gasto típico</span>
+      </div>
+      <div class="r-kpi">
+        <span class="r-kpi__label">GASTO MÁXIMO</span>
+        <span class="r-kpi__value">{{ maxAmt | currency:'COP':'':'1.0-0':'es-CO' }}</span>
+        <span class="r-kpi__sub" *ngIf="topExpense">{{ topExpense.description | slice:0:28 }}</span>
+      </div>
+      <div class="r-kpi">
+        <span class="r-kpi__label">CATEGORÍAS ACTIVAS</span>
+        <span class="r-kpi__value r-kpi__value--big">{{ catStats.length }}</span>
+        <span class="r-kpi__sub">de 8 posibles</span>
+      </div>
+    </div>
+
+    <!-- Charts row -->
+    <div class="r-charts">
+
+      <!-- Category breakdown -->
+      <div class="r-panel">
+        <div class="r-panel__title">
+          <span>Distribución por Categoría</span>
+          <span class="r-panel__count">{{ catStats.length }} categorías</span>
+        </div>
+        <div class="cat-list">
+          <div class="cat-row" *ngFor="let c of catStats">
+            <div class="cat-row__head">
+              <span class="cat-row__name">{{ c.label }}</span>
+              <div class="cat-row__right">
+                <span class="cat-row__count">{{ c.count }} gastos</span>
+                <span class="cat-row__pct" [style.color]="c.color">{{ c.percent }}%</span>
+              </div>
+            </div>
+            <div class="cat-row__track">
+              <div class="cat-row__fill" [style.width.%]="c.percent" [style.background]="c.color"></div>
+            </div>
+            <span class="cat-row__total">{{ c.total | currency:'COP':'':'1.0-0':'es-CO' }} COP</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Monthly bar chart -->
+      <div class="r-panel" *ngIf="monthStats.length > 1">
+        <div class="r-panel__title">
+          <span>Gasto Mensual</span>
+          <span class="r-panel__count">{{ monthStats.length }} meses</span>
+        </div>
+        <div class="bar-chart">
+          <div class="bar-item" *ngFor="let m of monthStats">
+            <div class="bar-item__col">
+              <div class="bar-item__bar" [style.height.%]="m.bar">
+                <div class="bar-item__fill"></div>
+                <span class="bar-item__tip">{{ m.total | currency:'COP':'':'1.0-0':'es-CO' }}</span>
+              </div>
+            </div>
+            <span class="bar-item__label">{{ m.month }}</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Payment methods breakdown -->
+    <div class="r-panel r-panel--full">
+      <div class="r-panel__title"><span>Top 5 Gastos Más Altos</span></div>
+      <div class="top-list">
+        <div class="top-item" *ngFor="let e of getTop5(); let i = index">
+          <span class="top-item__rank" [class.top-item__rank--1]="i===0">{{ i+1 }}</span>
+          <div class="top-item__body">
+            <span class="top-item__desc">{{ e.description }}</span>
+            <span class="top-item__meta">{{ e.date | date:'dd MMM yy':'' : 'es' }} · {{ e.category }}</span>
+          </div>
+          <span class="top-item__amt">{{ e.amount | currency:'COP':'':'1.0-0':'es-CO' }}</span>
+        </div>
+      </div>
+    </div>
+
+  </ng-container>
+</div>

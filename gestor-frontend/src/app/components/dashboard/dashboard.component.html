@@ -1,0 +1,72 @@
+<div class="dashboard">
+
+  <!-- Toast -->
+  <div class="toast" [class.toast--visible]="toast" [class.toast--error]="toast!.type === 'error'" *ngIf="toast">
+    <span class="toast__bar"></span>
+    <span class="toast__text">{{ toast.message }}</span>
+  </div>
+
+  <!-- Hero section -->
+  <section class="hero">
+    <div class="hero__left">
+      <div class="hero__eyebrow">
+        <span class="eyebrow-dot"></span>
+        Control Financiero Personal
+      </div>
+      <h1 class="hero__title">
+        Tus <span class="hero__title--red">Gastos,</span><br>
+        Bajo<br>
+        <span class="hero__title--outline">Control.</span>
+      </h1>
+      <p class="hero__sub">Registra, analiza y domina cada peso que sale de tu bolsillo.</p>
+      <button class="btn-primary" (click)="openNew()">
+        <span>+ Registrar Gasto</span>
+      </button>
+    </div>
+
+    <div class="hero__right">
+      <!-- Floating stat cards -->
+      <div class="stat-float stat-float--1" *ngIf="expenses.length">
+        <span class="stat-float__label">Total Gastos</span>
+        <span class="stat-float__value">{{ getTotalAmount() | currency:'COP':'':'1.0-0':'es-CO' }}</span>
+        <span class="stat-float__badge">COP</span>
+      </div>
+      <div class="stat-float stat-float--2" *ngIf="expenses.length">
+        <span class="stat-float__num">{{ expenses.length }}</span>
+        <span class="stat-float__label">Registros</span>
+      </div>
+      <div class="stat-float stat-float--3" *ngIf="expenses.length">
+        <span class="stat-float__label">Este mes</span>
+        <span class="stat-float__num">{{ getMonthlyCount() }}</span>
+      </div>
+      <div class="hero__glow"></div>
+    </div>
+  </section>
+
+  <!-- Stats strip -->
+  <app-expense-stats [expenses]="expenses"></app-expense-stats>
+
+  <!-- Divider -->
+  <div class="section-label">
+    <div class="section-label__line"></div>
+    <span>HISTORIAL DE GASTOS</span>
+    <div class="section-label__line"></div>
+    <button class="reload-btn" (click)="loadExpenses()" title="Recargar">↻</button>
+  </div>
+
+  <!-- List -->
+  <app-expense-list
+    [expenses]="expenses"
+    [loading]="loading"
+    (edit)="openEdit($event)"
+    (delete)="onDelete($event)"
+  ></app-expense-list>
+
+  <!-- Form panel -->
+  <app-expense-form
+    [visible]="formVisible"
+    [expense]="editingExpense"
+    (save)="onSave($event)"
+    (cancel)="closeForm()"
+  ></app-expense-form>
+</div>
